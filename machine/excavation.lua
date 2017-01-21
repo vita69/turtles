@@ -1,10 +1,11 @@
+
 -- 暫定版(動作未チェック)
 
 -- 掘削サイズ
 width = 4
 height = 4
 depth = 100 -- 0を指定した場合は、燃料が尽きるまで直進する
-fuelMinLevel = (((width - 1) * 2) + ((height - 1) * 2)) * depth + (depth * 2) -- 最低必要燃料数(深さ指定時) / 1ブロック分の周回移動分+depth往復量
+fuelMinLevel = (((width - 1) * 2) + ((height - 1) * 2)) * depth + (depth * 2) + 2 -- 最低必要燃料数(深さ指定時) / 1ブロック分の周回移動分+depth往復量
 isSetTorch = true; -- 松明を設置するか
 torchSpan = 8
 torchSlot = 5
@@ -30,15 +31,15 @@ function digBlock(n)
     turtle.turnLeft()
 
     for i = 1, height - 1 do
-        while turtle.detect() do
-            turtle.dig()
-            turtle.attack()
-        end
+        --while turtle.detect() do
+        --    turtle.dig()
+        --    turtle.attack()
+        --end
         while turtle.detectUp() do
             turtle.digUp()
             turtle.attackUp()
         end
-        turtle.Up()
+        turtle.up()
     end
 
     for i = 1, width - 1 do
@@ -56,33 +57,45 @@ function digBlock(n)
                 turtle.place()
                 turtle.turnLeft()
                 turtle.turnLeft()
-            elseif i == width - 1 then
-                turtle.select(torchSlot)
-                turtle.place()
-                turtle.forward()
             else
                 turtle.forward()
             end
         else
             turtle.forward()
         end
-
-
     end
 
     turtle.turnLeft()
     turtle.turnLeft()
 
     for i = 1, height - 1 do
-        while turtle.detect() do
-            turtle.dig()
-            turtle.attack()
+        if i > 1 then
+          for j = 1, width - 2 do
+            while turtle.detect() do
+                turtle.dig()
+                turtle.attack()
+            end
+
+            if j < width - 2 then
+              turtle.forward()
+            end
+          end
+          for j = 1, width - 3 do
+            turtle.back()
+          end
         end
+
         while turtle.detectDown() do
             turtle.digDown()
             turtle.attackDown()
         end
-        turtle.Down()
+        turtle.down()
+        if isSetTorch and turtle.getItemCount(torchSlot) > 0 and n % torchSpan == 0 then
+          if i == 1 then
+            turtle.select(torchSlot)
+            turtle.placeUp()
+          end
+        end
     end
     turtle.turnRight()
 end
@@ -119,6 +132,21 @@ else
     while isContinue do
         for i = 0, depth do
             digBlock(i)
+            for i=1,16 do --インベントリ2～16にあるアイテムで石系のアイテムを捨てる
+              if i == 5 then
+                --
+              else
+                turtle.select(i)
+                table1=turtle.getItemDetail()
+                if not (table1==nill) then
+                	if string.find(table1["name"],"stone") or string.find(table1["name"],"dirt") then
+                		if not string.find(table1["name"],"redstone") then
+                			turtle.dropDown()
+                		end
+                	end
+                end
+              end
+            end
             i = i + 1
         end
         for i = 0, depth do
@@ -131,7 +159,7 @@ else
         else
             print("move to next route(left side).")
             turtle.turnLeft()
-            for i = 1, 4 do
+            for i = 1, width + 1 do
                 while turtle.detect() do
                     turtle.dig()
                     turtle.attack()
@@ -144,7 +172,3 @@ else
 end
 print("")
 print("-- star excavaton --")
-
-
-
-
