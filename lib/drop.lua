@@ -1,3 +1,4 @@
+-- startSlotNumからendSlotNumまでを指定方向(direction)にドロップする(格納または捨てる)
 function dropAll(direction, startSlotNum, endSlotNum)
     local direction = direction or "forward"
 
