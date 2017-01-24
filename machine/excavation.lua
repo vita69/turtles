@@ -1,5 +1,12 @@
 -- 暫定版(動作未チェック)
 
+dofile("./lib/dig.lua")
+dofile("./lib/drop.lua")
+dofile("./lib/move.lua")
+dofile("./lib/place.lua")
+dofile("./lib/select.lua")
+dofile("./lib/turn.lua")
+
 -- 掘削サイズ
 width = 4
 height = 4
@@ -10,81 +17,74 @@ torchSpan = 8
 torchSlot = 5
 
 function digBlock(n)
-    -- 1ブロック進む
-    while turtle.detect() do
-        turtle.dig()
-        turtle.attack()
-    end
-    turtle.forward()
+    move("forward", 1, true)
+    turn("left")
 
-    turtle.turnLeft()
+    -- 下辺移動
+    select(2, 16)
+    placeDown()
     for i = 1, width - 1 do
-        while turtle.detect() do
-            turtle.dig()
-            turtle.attack()
-        end
-        turtle.forward()
+        move("forward", 1, true)
+        select(2, 16)
+        placeDown()
     end
 
-    turtle.turnLeft()
-    turtle.turnLeft()
-
+    -- 左辺移動(上昇)
+    select(2, 16)
+    place()
     for i = 1, height - 1 do
-        while turtle.detect() do
-            turtle.dig()
-            turtle.attack()
-        end
-        while turtle.detectUp() do
-            turtle.digUp()
-            turtle.attackUp()
-        end
-        turtle.Up()
+        move("up")
+        select(2, 16)
+        place()
     end
 
-    for i = 1, width - 1 do
-        while turtle.detect() do
-            turtle.dig()
-            turtle.attack()
-        end
+    turn("right", 2)
 
-        if isSetTorch and turtle.getItemCount(torchSlot) > 0 and n % torchSpan == 0 then
+    -- 上辺移動
+    select(2, 16)
+    placeUp()
+    for i = 1, width - 1 do
+
+        if n % torchSpan == 0 then
             if i == 1 then
-                turtle.forward()
-                turtle.turnLeft()
-                turtle.turnLeft()
-                turtle.select(torchSlot)
-                turtle.place()
-                turtle.turnLeft()
-                turtle.turnLeft()
-            elseif i == width - 1 then
-                turtle.select(torchSlot)
-                turtle.place()
-                turtle.forward()
-            else
-                turtle.forward()
+                if select(1, 1) then
+                    turn("right", 2)
+                    placeUp()
+                    turn("left", 2)
+                end
             end
-        else
-            turtle.forward()
         end
 
-
+        move("forward", 1, true)
+        select(2, 16)
+        placeUp()
     end
 
-    turtle.turnLeft()
-    turtle.turnLeft()
-
+    -- 右辺移動(下降)
+    select(2, 16)
+    place()
     for i = 1, height - 1 do
-        while turtle.detect() do
-            turtle.dig()
-            turtle.attack()
+        move("down")
+
+        if n % torchSpan == 0 then
+            if i == 1 then
+                if select(1, 1) then
+                    placeUp()
+                end
+            end
         end
-        while turtle.detectDown() do
-            turtle.digDown()
-            turtle.attackDown()
-        end
-        turtle.Down()
+
+        select(2, 16)
+        place()
+
+        -- 中身を削る
+        turn("right", 2)
+        move("forward", width - 2)
+        turn("left", 2)
+        move("forward", width - 2)
     end
-    turtle.turnRight()
+
+    turn("left")
 end
 
 
@@ -100,7 +100,7 @@ while turtle.getFuelLevel() < fuelMinLevel do
 end
 print("refuel is completed.")
 print("")
-print("-- star excavaton --")
+print("-- start excavaton --")
 
 
 if depth <= 0 then
@@ -110,9 +110,7 @@ if depth <= 0 then
         sleep(0)
     end
 else
-
     local isContinue = true
-
     -- 右下から開始を想定
     -- 燃料が余っていたら、右方向に移動し、再度同じ方向へ掘削を開始する(通路間隔は1マス開ける)
     -- 往復分の燃料がなかったら、停止
@@ -143,7 +141,7 @@ else
     end
 end
 print("")
-print("-- star excavaton --")
+print("-- stop excavaton --")
 
 
 
