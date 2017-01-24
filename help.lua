@@ -1,0 +1,83 @@
+-- Turtle API
+-- Turtle APIはタートルを動作させるためのAPI
+-- API一覧
+-- エラーメッセージは失敗したときのみ
+-- 表中、メソッド名の欄で[]で囲った引数は省略可能
+-- タートルのインベントリは16個のスロットがあり下図のように番号が振られています。また現在選択しているスロットを選択スロットと呼び、下図では太い枠で表示されています。
+-- +----+----+----+----+
+-- |  1 |  2 |  3 |  4 |
+-- +----+----+----+----+
+-- |  5 |  6 |  7 |  8 |
+-- +----+----+----+----+
+-- |  9 | 10 | 11 | 12 |
+-- +----+----+----+----+
+-- | 13 | 14 | 15 | 16 |
+-- +----+----+----+----+
+--
+--
+--
+-- 燃料
+--  turtle.refuel( [count] )                       boolean     true/false  string      エラーメッセージ     選択スロットのアイテムを引数個使い燃料補給します 引数省略時は全て使います
+--  turtle.getFuelLevel()                          number      fuelLevel   -                              現在の燃料値を返します
+--  turtle.getFuelLimit()                          number      fuelLevel   -                              燃料値の上限を返します cc1.6xから実装
+--
+-- 移動
+--  turtle.forward()                               boolean     true/false  string      エラーメッセージ     前進
+--  turtle.back()                                  boolean     true/false  string      エラーメッセージ     後進
+--  turtle.up()                                    boolean     true/false  string      エラーメッセージ     上昇
+--  turtle.down()                                  boolean     true/false  string      エラーメッセージ     下降
+--  turtle.turnLeft()                              boolean     (true)      -                              左に90°回転 必ず成功 戻り値も必ずtrue
+--  turtle.turnRight()                             boolean     (true)      -                              右に90°回転 必ず成功 戻り値も必ずtrue
+--
+--  インベントリ操作
+--  turtle.select( [slotNumber] )                  boolean     (true)      -                              選択スロットを引数値に変えます 必ず成功 戻り値も必ずtrue
+--  turtle.getSelectedSlot()                       number      itemCount   -                              選択スロットの番号を返します cc1.6xから追加
+--  turtle.getItemCount( [slotNumber] )            number      itemCount   -                              引数値のスロットの個数を返します
+--  turtle.getItemSpace( [slotNUmber] )            number      itemCount   -                              引数値のスロットにあといくつ入るか返します
+--  turtle.compareTo( slotNumber )                 boolean     true/false  -                              選択スロットと引数値のスロットの中身を比較して同じならtrue違えばfalseを返します
+--  turtle.transferTo( slotNumber, itemCount )     boolean     true/false  string      エラーメッセージ     選択スロットから引数値(1)のスロットへ引数(2)個移します*1
+--  turtle.getItemDetail( [slotNumber] )           table       data        -                              引数値スロットのアイテムをTabel型で返します cc1.64から追加
+--  * table についての例
+--    スロット1に土ブロック(dirt)が1個あるときに、turtle.getItemDetail(1) を実行した場合に返ってくるテーブル
+--    { count = 1, name = "minecraft:dirt", damage = 0 }
+--
+--  ブロック設置
+--  turtle.place( [plateLabel] )                   boolean      true/false  string      エラーメッセージ    前に選択スロットのブロックを設置します 看板(sign)を設置するときに文字列を書き込むこともできます
+--  turtle.placeUp( [plateLabel] )                 boolean      true/false  string      エラーメッセージ    上に選択スロットのブロックを設置します 看板(sign)を設置するときに文字列を書き込むこともできます
+--  turtle.placeDown( [plateLabel] )               boolean      true/false  string      エラーメッセージ    下に選択スロットのブロックを設置します 看板(sign)を設置するときに文字列を書き込むこともできます
+--
+--  ツール装備
+--  turtle.equipLeft()                             boolean      true/false  string      エラーメッセージ    選択スロットのアイテムと左側に装備した道具を交換します
+--  turtle.equipRight()                            boolean      true/false  string      エラーメッセージ    選択スロットのアイテムと右側に装備した道具を交換します
+--
+--  採掘・伐採・攻撃
+--  turtle.dig()                                   boolean      true/false  string      エラーメッセージ    前のブロックを壊す 鍬なら目の前の土、又は前の一つ下の土を耕します
+--  turtle.digUp()                                 boolean      true/false  string      エラーメッセージ    上のブロックを壊す 鍬なら上にある土を耕します
+--  turtle.digDown()                               boolean      true/false  string      エラーメッセージ    下のブロックを壊す 鍬なら２段下の土を耕します
+--  turtle.attack()                                boolean      true/false  string      エラーメッセージ    前を攻撃します
+--  turtle.attackUp()                              boolean      true/false  string      エラーメッセージ    上を攻撃します
+--  turtle.attackDown()                            boolean      true/false  string      エラーメッセージ    下を攻撃します
+--
+--  隣接ブロックの検知・比較・調査
+--  turtle.detect()                                boolean      true/false  -                             前に何らかのブロックがあるならばtrue
+--  turtle.detectUp()                              boolean      true/false  -                             上に何らかのブロックがあるならばtrue
+--  turtle.detectDown()                            boolean      true/false  -                             下に何らかのブロックがあるならばtrue
+--  turtle.compare()                               boolean      true/false  -                             前にあるブロックと選択スロットのアイテムを比較して同じならばtrue
+--  turtle.compareUp()                             boolean      true/false  -                             前にあるブロックと選択スロットのアイテムを比較して同じならばtrue
+--  turtle.compareDown()                           boolean      true/false  -                             前にあるブロックと選択スロットのアイテムを比較して同じならばtrue
+--  turtle.inspect()                               boolean      true/false  table       データ             戻り値1で前にブロックがあるかどうかを返し、戻り値2でブロックの情報をテーブルで返します。cc1.64より追加
+--  turtle.inspectUp()                             boolean      true/false  table       データ             戻り値1で上にブロックがあるかどうかを返し、戻り値2でブロックの情報をテーブルで返します。cc1.64より追加
+--  turtle.inspectDown()                           boolean      true/false  table       データ             戻り値1で下にブロックがあるかどうかを返し、戻り値2でブロックの情報をテーブルで返します。cc1.64より追加
+--  * inspectについて
+--    第2戻り値のtableはstring エラーの場合あり
+--
+--  アイテムの入手・ドロップ(チェストなどに格納)
+--  turtle.suck( [itemCount] )                     boolean      true/false  string       エラーメッセージ   正面からアイテムを個数分(省略時は1スタック)入手。1個でも入手できれば結果成功
+--  turtle.suckUp( [itemCount] )                   boolean      true/false  string       エラーメッセージ   上からアイテムを個数分(省略時は1スタック)入手。1個でも入手できれば結果成功
+--  turtle.suckDown( [itemCount] )                 boolean      true/false  string       エラーメッセージ   下からアイテムを個数分(省略時は1スタック)入手。1個でも入手できれば結果成功
+--  turtle.drop( [itemCount] )                     boolean      true/false  string       エラーメッセージ   正面にアイテムを個数分(省略時は1スタック)ドロップ。正面がチェストなどインベントリを持つならば個数分格納。1個でも格納できれば結果成功
+--  turtle.dropUp( [itemCount] )                   boolean      true/false  string       エラーメッセージ   上にアイテムを個数分(省略時は1スタック)ドロップ。上がチェストなどインベントリを持つならば個数分格納。1個でも格納できれば結果成功
+--  turtle.dropDown( [itemCount] )                 boolean      true/false  string       エラーメッセージ   下にアイテムを個数分(省略時は1スタック)ドロップ。下がチェストなどインベントリを持つならば個数分格納。1個でも格納できれば結果成功
+--
+--  クラフト(クラフティタートルのみ
+--  turtle.craft?( [createCount] )                 boolean      true/false  -                             インベントリ内の任意の3x3範囲をクラフティングテーブルとみなしてクラフト。ただしクラフトに関係ないアイテムがインベントリ内に1つでもあるとクラフト不可。
