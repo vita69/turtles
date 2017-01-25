@@ -10,22 +10,35 @@ function move(direction, n, force)
 
     local bool = false
 
+    if direction == "left" or direction == "right" then
+        turn(direction)
+    end
 
     for i = 1, n do
         if(force) then
             dig(direction)
         end
+        bool = false
         if direction == "forward" then
-            bool = turtle.forward()
+            while bool do
+                bool = turtle.forward()
+            end
         elseif direction == "back" then
-            bool = turtle.back()
+            while bool do
+                bool = turtle.back()
+            end
         elseif direction == "up" then
-            bool = turtle.up()
+            while bool do
+                bool = turtle.up()
+            end
         elseif direction == "down" then
-            bool = turtle.down()
+            while bool do
+                bool = turtle.down()
+            end
         elseif direction == "left" or direction == "right" then
-            turn(direction)
-            bool = turtle.forward() -- 方向は進んだ方向のまま
+            while bool do
+                bool = turtle.forward() -- 方向は進んだ方向のまま
+            end
         end
     end
     return bool

@@ -18,14 +18,14 @@ function dig(direction)
         end
         turn("left", 2)
     elseif direction == "up" then
-        while turtle.detect() do
-            turtle.dig()
-            turtle.attack() -- mob用
+        while turtle.detectUp() do
+            turtle.digUp()
+            turtle.attackUp() -- mob用
         end
     elseif direction == "down" then
-        while turtle.detect() do
-            turtle.dig()
-            turtle.attack() -- mob用
+        while turtle.detectDown() do
+            turtle.digDown()
+            turtle.attackDown() -- mob用
         end
     elseif direction == "left" then
         turn("left")
