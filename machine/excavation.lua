@@ -12,76 +12,55 @@ width = 4
 height = 4
 depth = 100 -- 0を指定した場合は、燃料が尽きるまで直進する
 fuelMinLevel = (((width - 1) * 2) + ((height - 1) * 2)) * depth + (depth * 2) -- 最低必要燃料数(深さ指定時) / 1ブロック分の周回移動分+depth往復量
-isSetTorch = true; -- 松明を設置するか
-torchSpan = 8
-torchSlot = 5
 
 function digBlock(n)
     move("forward", 1, true)
     turn("left")
 
     -- 下辺移動
-    select(2, 16)
-    placeDown()
+    select(1, 16)
+    place("down")
     for i = 1, width - 1 do
         move("forward", 1, true)
-        select(2, 16)
-        placeDown()
+        select(1, 16)
+        place("down")
     end
 
     -- 左辺移動(上昇)
-    select(2, 16)
+    select(1, 16)
     place()
     for i = 1, height - 1 do
-        move("up")
-        select(2, 16)
+        move("up", 1, true)
+        select(1, 16)
         place()
     end
 
     turn("right", 2)
 
     -- 上辺移動
-    select(2, 16)
-    placeUp()
+    select(1, 16)
+    place("up")
     for i = 1, width - 1 do
-
-        if n % torchSpan == 0 then
-            if i == 1 then
-                if select(1, 1) then
-                    turn("right", 2)
-                    placeUp()
-                    turn("left", 2)
-                end
-            end
-        end
-
         move("forward", 1, true)
-        select(2, 16)
-        placeUp()
+        select(1, 16)
+        place("up")
     end
 
     -- 右辺移動(下降)
-    select(2, 16)
+    select(1, 16)
     place()
     for i = 1, height - 1 do
-        move("down")
-
-        if n % torchSpan == 0 then
-            if i == 1 then
-                if select(1, 1) then
-                    placeUp()
-                end
-            end
-        end
-
-        select(2, 16)
+        move("down", 1, true)
+        select(1, 16)
         place()
 
-        -- 中身を削る
-        turn("right", 2)
-        move("forward", width - 2)
-        turn("left", 2)
-        move("forward", width - 2)
+        if i < height - 1 then
+            -- 中身を削る
+            turn("right", 2)
+            move("forward", width - 2)
+            turn("left", 2)
+            move("forward", width - 2)
+        end
     end
 
     turn("left")
@@ -100,7 +79,7 @@ while turtle.getFuelLevel() < fuelMinLevel do
 end
 print("refuel is completed.")
 print("")
-print("-- start excavaton --")
+print("-- start excavaton and repair wall --")
 
 
 if depth <= 0 then
@@ -129,7 +108,7 @@ else
         else
             print("move to next route(left side).")
             turtle.turnLeft()
-            for i = 1, 4 do
+            for i = 1, width + 1 do
                 while turtle.detect() do
                     turtle.dig()
                     turtle.attack()
@@ -141,7 +120,7 @@ else
     end
 end
 print("")
-print("-- stop excavaton --")
+print("-- stop excavaton and repair wall --")
 
 
 
